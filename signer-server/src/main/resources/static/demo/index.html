@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signer Demo</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/base.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="logo">&#10003;</div>
+  <div class="title">Signer &middot; Digital Signature Demo</div>
+  <div class="spacer"></div>
+  <a href="/admin/">Admin console</a>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <h2>1. Signing agent on this computer</h2>
+    <div class="grid cols-3">
+      <div>
+        <label for="agentUrl">Agent address</label>
+        <input type="text" id="agentUrl" value="http://127.0.0.1:1645">
+      </div>
+      <div class="row" style="align-items:flex-end">
+        <button id="checkAgent" class="secondary">Check agent</button>
+        <button id="listCerts" class="secondary">Show certificates</button>
+      </div>
+    </div>
+    <p id="agentStatus" class="notice" style="margin-top:12px">Checking...</p>
+    <div id="certTable" class="table-wrap hidden"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. Document</h2>
+    <div class="row">
+      <input type="file" id="file" accept="application/pdf">
+      <button id="useSample" class="secondary">Use sample note file</button>
+      <span id="fileName" class="muted"></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3. Signature</h2>
+    <div class="grid cols-4">
+      <div><label for="page">Page (1, 2, ... or last)</label><input type="text" id="page" value="last"></div>
+      <div><label for="x">X (points from left)</label><input type="number" id="x" value="360"></div>
+      <div><label for="y">Y (points from bottom)</label><input type="number" id="y" value="40"></div>
+      <div><label for="w">Width x Height</label>
+        <div class="row"><input type="number" id="w" value="200" style="width:48%"><input type="number" id="h" value="70" style="width:48%"></div></div>
+      <div><label for="reason">Reason</label><input type="text" id="reason" value="Approved"></div>
+      <div><label for="location">Location</label><input type="text" id="location" value="Amaravati"></div>
+      <div class="grid" style="grid-column: span 2"><label for="custom">Additional text</label><input type="text" id="custom" placeholder="e.g. File No. GAD01/123/2026"></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <label class="check"><input type="checkbox" id="greenTick" checked> Green tick</label>
+      <label class="check"><input type="checkbox" id="timestamp"> Trusted timestamp (server)</label>
+      <label class="check"><input type="checkbox" id="pades"> PAdES format</label>
+    </div>
+    <h3 style="margin-top:16px">Signing mode</h3>
+    <div class="grid cols-2">
+      <label class="check"><input type="radio" name="mode" value="server" checked>
+        <span><b>Server prepares, token signs the hash</b><br><span class="muted small">Recommended. Only 32 bytes go to the token; supports timestamps.</span></span></label>
+      <label class="check"><input type="radio" name="mode" value="agent">
+        <span><b>Desktop agent signs the whole PDF</b><br><span class="muted small">Same model as the APTS browser signing utility.</span></span></label>
+    </div>
+    <div class="row end" style="margin-top:16px">
+      <button id="sign">Sign document</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Activity</h2>
+    <div id="log" class="log"></div>
+  </section>
+
+  <section id="result" class="card hidden">
+    <div class="row" style="justify-content:space-between">
+      <h2>Signed document</h2>
+      <div class="row"><button id="download">Download signed PDF</button></div>
+    </div>
+    <div id="verifyTable" class="table-wrap"></div>
+    <iframe id="preview" class="preview" title="Signed PDF preview" style="margin-top:12px"></iframe>
+  </section>
+</main>
+
+<script src="/sdk/signer.js"></script>
+<script src="/demo/demo.js"></script>
+</body>
+</html>

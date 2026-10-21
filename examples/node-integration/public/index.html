@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Example application - sign with DSC</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; color: #1b1f24; }
+    button { padding: 8px 14px; font-weight: 600; }
+    pre { background: #f3f5f8; padding: 10px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Approve file</h1>
+  <p>File No. <input id="fileNo" value="GAD01/123/2026"></p>
+  <p><input type="file" id="pdf" accept="application/pdf"></p>
+  <button id="sign">Sign with my DSC token</button>
+  <pre id="out"></pre>
+
+  <script src="/config.js"></script>
+  <script>
+    // Load the SDK from your Signer Server
+    var s = document.createElement('script');
+    s.src = window.SIGNER_URL + '/sdk/signer.js';
+    s.onload = init;
+    document.head.appendChild(s);
+
+    function init() {
+      var out = document.getElementById('out');
+      var client = new Signer.SignerClient({
+        serverUrl: window.SIGNER_URL,
+        getToken: function () {
+          return fetch('/esign/token', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileNo: document.getElementById('fileNo').value })
+          }).then(function (r) { return r.json(); }).then(function (j) { return j.token; });
+        }
+      });
+      document.getElementById('sign').onclick = async function () {
+        var file = document.getElementById('pdf').files[0];
+        if (!file) { out.textContent = 'Choose a PDF first'; return; }
+        try {
+          out.textContent = 'Waiting for the Signer window...';
+          var signed = await client.signPdfOnServer({
+            pdf: file, name: file.name,
+            options: { reason: 'Approved', location: 'Amaravati', page: 'last', customText: 'File No. ' + document.getElementById('fileNo').value }
+          });
+          out.textContent = 'Signed by ' + signed.certificate.commonName + ' (transaction ' + signed.txn + ')';
+          Signer.download(signed.blob, file.name.replace(/\.pdf$/i, '') + '-signed.pdf');
+        } catch (e) {
+          out.textContent = e.code + ': ' + e.message;
+        }
+      };
+    }
+  </script>
+</body>
+</html>

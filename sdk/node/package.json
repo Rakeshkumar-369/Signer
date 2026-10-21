@@ -1,0 +1,9 @@
+{
+  "name": "signer-server-client",
+  "version": "1.0.0",
+  "description": "Node.js client for the Signer Server (transaction tokens, server-side PDF signing, verification)",
+  "main": "signer-server-client.js",
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED",
+  "private": true
+}

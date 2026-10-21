@@ -137,7 +137,7 @@ public final class AgentMain {
         if (Files.isDirectory(user)) {
             return user;
         }
-        return AgentConfig.installDir().map(d -> d.resolve("trust")).orElse(user);
+        return AgentConfig.installDir().map(d -> AgentConfig.installFile(d, "trust")).orElse(user);
     }
 
     public static String version() {

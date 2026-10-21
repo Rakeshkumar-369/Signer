@@ -14,7 +14,7 @@
     <modules>
         <module>signer-core</module>
         <module>signer-agent</module>
-        <!--S-->
+        <module>signer-server</module>
     </modules>
 
     <properties>

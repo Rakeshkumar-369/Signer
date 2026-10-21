@@ -1,0 +1,4 @@
+# Public half of the vendor licensing key (Ed25519, base64url). Licence files are verified against it.
+# Generate the key pair once with:  java -jar signer-server.jar license generate-keys --out vendor-keys
+# then paste the "public" value below and rebuild. Keep the private key offline.
+# While empty, the server runs in evaluation mode.

@@ -1,0 +1,26 @@
+# systemd unit for running Signer Server directly on a Linux VM.
+#   sudo useradd --system --home /opt/signer --shell /usr/sbin/nologin signer
+#   sudo mkdir -p /opt/signer && sudo cp signer-server.jar /opt/signer/ && sudo cp signer.env /etc/signer.env
+#   sudo chown -R signer /opt/signer && sudo chmod 600 /etc/signer.env
+#   sudo cp signer-server.service /etc/systemd/system/ && sudo systemctl enable --now signer-server
+[Unit]
+Description=Signer Server (digital signature licensing and signing service)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+User=signer
+WorkingDirectory=/opt/signer
+EnvironmentFile=/etc/signer.env
+ExecStart=/usr/bin/java -Xmx1g -Duser.timezone=UTC -jar /opt/signer/signer-server.jar
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/signer
+
+[Install]
+WantedBy=multi-user.target

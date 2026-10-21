@@ -34,7 +34,7 @@ public final class AgentConfig {
         }
         List<Path> sources = new ArrayList<>();
         List<Path> candidates = new ArrayList<>();
-        installDir().ifPresent(d -> candidates.add(d.resolve("agent.properties")));
+        installDir().ifPresent(d -> candidates.add(installFile(d, "agent.properties")));
         candidates.add(userConfigDir().resolve("agent.properties"));
         if (explicitFile != null) {
             candidates.add(explicitFile);
@@ -137,6 +137,19 @@ public final class AgentConfig {
             dir = dir.getParent();
         }
         return java.util.Optional.ofNullable(dir);
+    }
+
+    /**
+     * Resolves a file shipped with the installer. jpackage places extra content next to the launcher on
+     * Windows/macOS and under {@code lib/} on Linux.
+     */
+    public static Path installFile(Path installDir, String name) {
+        for (Path candidate : new Path[]{installDir.resolve(name), installDir.resolve("lib").resolve(name), installDir.resolve("app").resolve(name)}) {
+            if (Files.exists(candidate)) {
+                return candidate;
+            }
+        }
+        return installDir.resolve(name);
     }
 
     public static Path userConfigDir() {
