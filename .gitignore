@@ -1,0 +1,14 @@
+target/
+*.class
+*.log
+.idea/
+*.iml
+.vscode/
+.DS_Store
+node_modules/
+data/
+*.p12
+*.pfx
+*.pem
+!**/src/test/resources/**/*.pem
+.env
